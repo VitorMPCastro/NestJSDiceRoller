@@ -1,25 +1,59 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
-import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+describe('App (e2e)', () => {
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleRef.createNestApplication();
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('should roll a dice', async () => {
+    const response = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `
+          mutation {
+            rollDice(input: { sides: 6 }) {
+              id
+              sides
+              result
+              createdAt
+            }
+          }
+        `,
+        });
+
+    expect(response.body.data.rollDice).toHaveProperty('sides', 6);
+  });
+
+  it('should fetch roll history', async () => {
+    const response = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: `
+          query {
+            diceRollHistory {
+              id
+              sides
+              result
+              createdAt
+            }
+          }
+        `,
+        });
+
+    expect(Array.isArray(response.body.data.diceRollHistory)).toBe(true);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });

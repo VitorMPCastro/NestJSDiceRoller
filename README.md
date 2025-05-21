@@ -44,6 +44,14 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## With Docker
+
+Also check docker-compose.yml file for more details.
+
+```bash
+sudo docker-compose up --build
+```
+
 ## Run tests
 
 ```bash
@@ -55,6 +63,12 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+```
+
+## With Docker
+
+```bash
+sudo docker compose run --rm test
 ```
 
 ## Deployment

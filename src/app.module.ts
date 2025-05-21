@@ -1,12 +1,19 @@
+// src/app.module.ts
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 import { DiceRollModule } from './dice-roll/dice-roll.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [DiceRollModule, PrismaModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
+    DiceRollModule,
+    PrismaModule,
+  ],
 })
 export class AppModule {}

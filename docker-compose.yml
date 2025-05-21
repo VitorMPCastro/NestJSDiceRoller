@@ -29,5 +29,18 @@ services:
       - .:/app
       - /app/node_modules
 
+  test:
+    build: .
+    container_name: nest-dice-test
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/diceroll
+    command: npm run test
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+
 volumes:
   pgdata:

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { DiceRollController } from './dice-roll.controller';
 import { DiceRollService } from './dice-roll.service';
+import { DiceRollResolver } from './dice-roll.resolver';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-  controllers: [DiceRollController],
-  providers: [DiceRollService]
+  imports: [PrismaModule],
+  providers: [DiceRollService, DiceRollResolver],
 })
 export class DiceRollModule {}
